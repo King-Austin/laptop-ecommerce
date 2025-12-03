@@ -114,7 +114,7 @@ const OrderManagement = () => {
             if (error) throw error;
             if (data && data.length > 0) {
                 setStats(data[0]);
-            }
+            } 
         } catch (error) {
             console.error("Error fetching stats:", error);
         }
@@ -300,67 +300,67 @@ const OrderManagement = () => {
 
                     {/* Statistics Cards */}
                     {stats && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                             <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6">
+                                    <CardTitle className="text-xs sm:text-sm font-medium">
                                         Total Orders
                                     </CardTitle>
-                                    <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                                    <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">{stats.total_orders}</div>
+                                <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                                    <div className="text-xl sm:text-2xl font-bold">{stats.total_orders}</div>
                                     <p className="text-xs text-muted-foreground">
-                                        {stats.today_orders} orders today
+                                        {stats.today_orders} today
                                     </p>
                                 </CardContent>
                             </Card>
 
                             <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Total Revenue
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6">
+                                    <CardTitle className="text-xs sm:text-sm font-medium">
+                                        Revenue
                                     </CardTitle>
-                                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
-                                        ₦{stats.total_revenue.toLocaleString()}
+                                <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                                    <div className="text-lg sm:text-2xl font-bold">
+                                        ₦{(stats.total_revenue / 1000000).toFixed(1)}M
                                     </div>
                                     <p className="text-xs text-muted-foreground">
-                                        ₦{stats.today_revenue.toLocaleString()} today
+                                        ₦{(stats.today_revenue / 1000).toFixed(0)}K today
                                     </p>
                                 </CardContent>
                             </Card>
 
                             <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">
-                                        Pending Orders
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6">
+                                    <CardTitle className="text-xs sm:text-sm font-medium">
+                                        Pending
                                     </CardTitle>
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">{stats.pending_orders}</div>
+                                <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                                    <div className="text-xl sm:text-2xl font-bold">{stats.pending_orders}</div>
                                     <p className="text-xs text-muted-foreground">
-                                        Awaiting confirmation
+                                        Awaiting
                                     </p>
                                 </CardContent>
                             </Card>
 
                             <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 sm:p-6">
+                                    <CardTitle className="text-xs sm:text-sm font-medium">
                                         Delivered
                                     </CardTitle>
-                                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">
+                                <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
+                                    <div className="text-xl sm:text-2xl font-bold">
                                         {stats.delivered_orders}
                                     </div>
                                     <p className="text-xs text-muted-foreground">
-                                        Successfully completed
+                                        Completed
                                     </p>
                                 </CardContent>
                             </Card>
@@ -368,20 +368,20 @@ const OrderManagement = () => {
                     )}
 
                     {/* Filters and Search */}
-                    <Card className="mb-6">
-                        <CardContent className="pt-6">
-                            <div className="flex flex-col md:flex-row gap-4">
+                    <Card className="mb-4 sm:mb-6">
+                        <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                                 <div className="flex-1 relative">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
-                                        placeholder="Search by order number, customer name, email, or phone..."
+                                        placeholder="Search orders..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         className="pl-10"
                                     />
                                 </div>
                                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger className="w-full md:w-[200px]">
+                                    <SelectTrigger className="w-full sm:w-[180px]">
                                         <Filter className="h-4 w-4 mr-2" />
                                         <SelectValue placeholder="Filter by status" />
                                     </SelectTrigger>
@@ -403,72 +403,75 @@ const OrderManagement = () => {
 
                     {/* Orders Table */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Orders ({filteredOrders.length})</CardTitle>
+                        <CardHeader className="p-4 sm:p-6">
+                            <CardTitle className="text-lg sm:text-xl">
+                                Orders ({filteredOrders.length})
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="p-0">
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Order #</TableHead>
-                                            <TableHead>Customer</TableHead>
-                                            <TableHead>Total</TableHead>
-                                            <TableHead>Payment</TableHead>
+                                            <TableHead className="min-w-[100px]">Order #</TableHead>
+                                            <TableHead className="min-w-[150px]">Customer</TableHead>
+                                            <TableHead className="min-w-[100px]">Total</TableHead>
+                                            <TableHead className="hidden sm:table-cell">Payment</TableHead>
                                             <TableHead>Status</TableHead>
-                                            <TableHead>Date</TableHead>
-                                            <TableHead>Actions</TableHead>
+                                            <TableHead className="hidden md:table-cell">Date</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredOrders.length === 0 ? (
                                             <TableRow>
                                                 <TableCell colSpan={7} className="text-center py-8">
-                                                    <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                                                    <p className="text-muted-foreground">No orders found</p>
+                                                    <AlertCircle className="h-8 sm:h-12 w-8 sm:w-12 mx-auto text-muted-foreground mb-2" />
+                                                    <p className="text-sm sm:text-base text-muted-foreground">No orders found</p>
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
                                             filteredOrders.map((order) => (
                                                 <TableRow key={order.id}>
-                                                    <TableCell className="font-medium">
+                                                    <TableCell className="font-medium text-xs sm:text-sm">
                                                         {order.order_number}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div>
+                                                        <div className="text-xs sm:text-sm">
                                                             <div className="font-medium">{order.customer_name}</div>
-                                                            <div className="text-sm text-muted-foreground">
+                                                            <div className="text-xs text-muted-foreground truncate max-w-[150px]">
                                                                 {order.customer_email}
                                                             </div>
-                                                            <div className="text-sm text-muted-foreground">
+                                                            <div className="text-xs text-muted-foreground sm:hidden">
                                                                 {order.customer_phone}
                                                             </div>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="font-semibold">
-                                                        ₦{order.total_amount.toLocaleString()}
+                                                    <TableCell className="font-semibold text-xs sm:text-sm whitespace-nowrap">
+                                                        ₦{(order.total_amount / 1000).toFixed(0)}K
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="hidden sm:table-cell">
                                                         <Badge className={getPaymentStatusColor(order.payment_status)}>
                                                             {order.payment_status}
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Badge className={getStatusColor(order.status)}>
-                                                            {order.status.replace(/_/g, " ")}
+                                                        <Badge className={`${getStatusColor(order.status)} text-xs`}>
+                                                            {order.status.replace(/_/g, " ").substring(0, 8)}
                                                         </Badge>
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="hidden md:table-cell text-xs sm:text-sm">
                                                         {new Date(order.created_at).toLocaleDateString()}
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="text-right">
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
                                                             onClick={() => openOrderDetails(order)}
+                                                            className="h-8 px-2 sm:px-3"
                                                         >
-                                                            <Eye className="h-4 w-4 mr-1" />
-                                                            View
+                                                            <Eye className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
+                                                            <span className="hidden sm:inline">View</span>
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>

@@ -9,11 +9,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Edit, Trash2, Package } from "lucide-react";
+import { Plus, Edit, Trash2, Package, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { ImageUploader } from "@/components/ImageUploader";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Product {
   id?: string;
@@ -46,6 +47,7 @@ interface Product {
 }
 
 const AdminDashboard = () => {
+  const { signOut, user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -64,6 +66,14 @@ const AdminDashboard = () => {
     featured: false,
   });
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      // Error handled in signOut function
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -227,24 +237,33 @@ const AdminDashboard = () => {
         description="Manage laptop inventory, add new products, and update product details"
         keywords="admin, dashboard, product management"
       />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Product Management</h1>
-            <p className="text-muted-foreground mt-1">Manage your laptop inventory</p>
+            <h1 className="text-2xl sm:text-3xl font-bold">Product Management</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              Manage your laptop inventory
+            </p>
+            {user && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Logged in as: {user.email}
+              </p>
+            )}
           </div>
-          <div className="flex gap-2">
-            <Link to="/admin/orders">
-              <Button variant="outline">
+          <div className="flex flex-wrap gap-2">
+            <Link to="/admin/orders" className="flex-1 sm:flex-none">
+              <Button variant="outline" className="w-full sm:w-auto">
                 <Package className="h-4 w-4 mr-2" />
-                View Orders
+                <span className="hidden sm:inline">View Orders</span>
+                <span className="sm:hidden">Orders</span>
               </Button>
             </Link>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={resetForm}>
+                <Button onClick={resetForm} className="flex-1 sm:flex-none">
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Product
+                  <span className="hidden sm:inline">Add Product</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -599,21 +618,26 @@ const AdminDashboard = () => {
                 </form>
               </DialogContent>
             </Dialog>
+            <Button variant="ghost" onClick={handleSignOut} className="flex-1 sm:flex-none">
+              <LogOut className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Sign Out</span>
+              <span className="sm:hidden">Logout</span>
+            </Button>
           </div>
         </div>
 
         <Card>
-          <CardContent className="p-0">
+          <CardContent className="p-0 overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Brand</TableHead>
-                  <TableHead>Category</TableHead>
+                  <TableHead className="w-16 sm:w-20">Image</TableHead>
+                  <TableHead className="min-w-[150px]">Name</TableHead>
+                  <TableHead className="hidden md:table-cell">Brand</TableHead>
+                  <TableHead className="hidden lg:table-cell">Category</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="hidden sm:table-cell">Stock</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -630,38 +654,49 @@ const AdminDashboard = () => {
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-16 h-16 object-cover rounded"
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded"
                         />
                       </TableCell>
-                      <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>{product.brand}</TableCell>
-                      <TableCell className="capitalize">{product.category}</TableCell>
-                      <TableCell>₦{product.price.toLocaleString()}</TableCell>
-                      <TableCell>
+                      <TableCell className="font-medium">
+                        <div className="max-w-[200px]">
+                          <p className="truncate">{product.name}</p>
+                          <p className="text-xs text-muted-foreground md:hidden">
+                            {product.brand}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{product.brand}</TableCell>
+                      <TableCell className="hidden lg:table-cell capitalize">{product.category}</TableCell>
+                      <TableCell className="font-semibold whitespace-nowrap">
+                        ₦{product.price.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs rounded ${product.in_stock
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
+                          className={`inline-flex px-2 py-1 text-xs rounded whitespace-nowrap ${product.in_stock
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                             }`}
                         >
-                          {product.in_stock ? "In Stock" : "Out of Stock"}
+                          {product.in_stock ? "In Stock" : "Out"}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1 justify-end">
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={() => handleEdit(product)}
+                            className="h-8 w-8 p-0"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                           <Button
                             size="sm"
                             variant="destructive"
                             onClick={() => handleDelete(product.id!)}
+                            className="h-8 w-8 p-0"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
                       </TableCell>
